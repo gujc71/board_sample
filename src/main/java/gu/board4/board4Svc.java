@@ -1,5 +1,6 @@
 package gu.board4;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -28,7 +29,7 @@ public class board4Svc {
 		return sqlSession.selectList("selectBoard4List", param);
     }
     
-    public void insertBoard(boardVO param, List<FileVO> filelist, String fileno) throws Exception {
+    public void insertBoard(boardVO param, List<FileVO> filelist, String[] fileno) throws Exception {
     	
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -39,16 +40,18 @@ public class board4Svc {
 	    		 sqlSession.insert("insertBoard4", param);
 	    	else sqlSession.update("updateBoard4", param);
 	
-			sqlSession.insert("deleteBoard4File", fileno);
+			HashMap p = new HashMap();
+			p.put("fileno", fileno) ;
+			sqlSession.insert("deleteBoard4File", p);
+			
 	    	for (FileVO f : filelist) {
 	    		f.setParentPK(param.getBrdno());
 	   		 	sqlSession.insert("insertBoard4File", f);
 	    	}
+			txManager.commit(status);
 		} catch (Exception ex) {
 			txManager.rollback(status);
 			throw ex;
-		} finally{
-			txManager.commit(status);
 		}	    	
     }
  

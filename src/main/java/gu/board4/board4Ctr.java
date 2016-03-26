@@ -49,7 +49,7 @@ public class board4Ctr {
     
     @RequestMapping(value = "/board4Save")
    	public String boardSave(HttpServletRequest request, boardVO boardInfo) throws Exception {
-    	String fileno = request.getParameter("fileno");
+    	String[] fileno = request.getParameterValues("fileno");
     	
     	FileUtil fs = new FileUtil();
 		List<FileVO> filelist = fs.SaveAllFiles(boardInfo.getUploadfile());

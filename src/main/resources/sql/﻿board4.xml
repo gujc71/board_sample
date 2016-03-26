@@ -74,10 +74,14 @@
     	INSERT INTO TBL_BOARDFILE (BRDNO, FILENAME, REALNAME, FILESIZE)
 		VALUES (#{parentPK}, #{filename}, #{realname}, #{filesize})
 	</insert>
-    <delete id="deleteBoard4File" parameterType="String">
+    <delete id="deleteBoard4File" parameterType="hashmap"> 
         DELETE 
           FROM TBL_BOARDFILE
-         WHERE FILENO IN (#{fileno})
+         WHERE FILENO IN (
+			  <foreach item="item" index="index" collection="fileno" separator=",">
+		        	 ${item}
+			  </foreach>  
+		)	         
     </delete> 
 	
 </mapper>
