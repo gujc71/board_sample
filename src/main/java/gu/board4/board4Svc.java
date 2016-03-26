@@ -6,6 +6,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import gu.common.FileVO;
 import gu.common.SearchVO;
@@ -26,15 +29,27 @@ public class board4Svc {
     }
     
     public void insertBoard(boardVO param, List<FileVO> filelist, String fileno) throws Exception {
-    	if (param.getBrdno()==null || "".equals(param.getBrdno()))
-    		 sqlSession.insert("insertBoard4", param);
-    	else sqlSession.update("updateBoard4", param);
-
-		sqlSession.insert("deleteBoard4File", fileno);
-    	for (FileVO f : filelist) {
-    		f.setParentPK(param.getBrdno());
-   		 	sqlSession.insert("insertBoard4File", f);
-    	}
+    	
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = txManager.getTransaction(def);
+		
+		try{
+	    	if (param.getBrdno()==null || "".equals(param.getBrdno()))
+	    		 sqlSession.insert("insertBoard4", param);
+	    	else sqlSession.update("updateBoard4", param);
+	
+			sqlSession.insert("deleteBoard4File", fileno);
+	    	for (FileVO f : filelist) {
+	    		f.setParentPK(param.getBrdno());
+	   		 	sqlSession.insert("insertBoard4File", f);
+	    	}
+		} catch (Exception ex) {
+			txManager.rollback(status);
+			throw ex;
+		} finally{
+			txManager.commit(status);
+		}	    	
     }
  
     public boardVO selectBoardOne(String param) throws Exception {
