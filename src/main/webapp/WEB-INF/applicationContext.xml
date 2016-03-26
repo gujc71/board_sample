@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:annotation-config/>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <context:component-scan base-package="gu"/>
+    
+    <!-- 
+    p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost/board"   
+	p:driverClassName="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" p:url="jdbc:log4jdbc:mysql://localhost/board"
+	-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+		  p:driverClassName="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" p:url="jdbc:log4jdbc:mysql://localhost/board" 
+          p:username="root" p:password="비밀번호"
+          p:initialSize="2"
+          p:maxActive="30"
+          p:maxIdle="10"
+          p:minIdle="3"
+          p:maxWait="30000"
+          p:removeAbandoned="true"
+          p:removeAbandonedTimeout="30"
+          p:validationQuery="SELECT 1" />
+
+	<!-- SqlSession setup for MyBatis Database Layer -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:/sql/*.xml" />
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSession"></constructor-arg>
+    </bean>  
+    
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	    
+</beans>

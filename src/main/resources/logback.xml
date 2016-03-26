@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  
+http://devofhwb.tistory.com/81
+jdbc.sqlonly    : Logs only SQL
+jdbc.sqltiming  : Logs the SQL, post-execution, including timing execution statistics
+jdbc.audit      : Logs ALL JDBC calls except for ResultSets
+jdbc.resultset  : all calls to ResultSet objects are logged
+jdbc.connection : Logs connection open and close events
+-->
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- By default, encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    <encoder>
+      <pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%thread] %-3level %logger{5} - %msg %n</pattern>
+    </encoder>
+  </appender>
+  
+  <logger name="jdbc" level="OFF"/>
+  
+  <logger name="jdbc.sqlonly" level="DEBUG" additivity="false">>
+    <appender-ref ref="STDOUT" />
+  </logger>  
+  
+  <logger name="jdbc.resultsettable" level="DEBUG" additivity="false">> 
+    <appender-ref ref="STDOUT" />
+  </logger>  
+  
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+  
+</configuration>

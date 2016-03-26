@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="board3">
+	<sql id="includeBoard">
+		WHERE BRDDELETEFLAG='N'
+         <if test="searchKeyword!=null and searchKeyword!='' and searchType!=''">
+			  <foreach item="item" index="index" collection="searchTypeArr">
+			        AND ${item} LIKE CONCAT('%', #{searchKeyword},'%' )
+			  </foreach>
+		</if>	           
+    </sql>
+
+    <select id="selectBoard3Count" resultType="Integer" parameterType="gu.common.SearchVO">
+        SELECT COUNT(*)
+          FROM TBL_BOARD
+         <include refid="includeBoard"/>
+    </select>  
+    
+    <select id="selectBoard3List" resultType="gu.board3.boardVO" parameterType="gu.common.SearchVO">
+        SELECT BRDNO, BRDTITLE, BRDWRITER, DATE_FORMAT(BRDDATE,'%Y-%m-%d') BRDDATE, BRDHIT
+          FROM TBL_BOARD
+         <include refid="includeBoard"/>
+         ORDER BY BRDNO DESC 
+         LIMIT ${rowStart-1}, ${rowEnd}
+    </select> 
+    
+    <insert id="insertBoard3" parameterType="gu.board3.boardVO" >
+    	INSERT INTO TBL_BOARD(BRDTITLE, BRDWRITER, BRDMEMO, BRDDATE, BRDHIT, BRDDELETEFLAG)
+		VALUES (#{brdtitle}, #{brdwriter}, #{brdmemo}, NOW(), 0, 'N' )
+	</insert>
+	
+    <update id="updateBoard3" parameterType="gu.board3.boardVO">
+        UPDATE TBL_BOARD
+           SET BRDTITLE=#{brdtitle}
+             , BRDWRITER=#{brdwriter}
+             , BRDMEMO=#{brdmemo} 
+         WHERE BRDDELETEFLAG='N'
+           AND BRDNO=#{brdno}
+    </update> 
+		 
+    <select id="selectBoard3One" parameterType="String" resultType="gu.board3.boardVO">
+        SELECT BRDNO, BRDTITLE, BRDWRITER, BRDMEMO, DATE_FORMAT(BRDDATE,'%Y-%m-%d') BRDDATE
+          FROM TBL_BOARD
+         WHERE BRDDELETEFLAG='N'
+           AND BRDNO=#{brdno}
+    </select> 
+
+    <update id="updateBoard3Read" parameterType="String">
+        UPDATE TBL_BOARD
+           SET BRDHIT = BRDHIT + 1 
+         WHERE BRDNO=#{brdno}
+    </update> 
+
+    <delete id="deleteBoard3One" parameterType="String">
+        UPDATE TBL_BOARD
+           SET BRDDELETEFLAG='Y' 
+         WHERE BRDNO=#{brdno}
+    </delete> 
+
+</mapper>
+

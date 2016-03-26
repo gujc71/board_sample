@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="board4">
+	<sql id="includeBoard">
+		WHERE BRDDELETEFLAG='N'
+         <if test="searchKeyword!=null and searchKeyword!='' and searchType!=''">
+			  <foreach item="item" index="index" collection="searchTypeArr" separator=" OR " open="AND (" close=")">
+		        	 ${item} LIKE CONCAT('%', #{searchKeyword},'%' )
+			  </foreach>
+		</if>	           
+    </sql>
+
+    <select id="selectBoard4Count" resultType="Integer" parameterType="gu.common.SearchVO">
+        SELECT COUNT(*)
+          FROM TBL_BOARD
+         <include refid="includeBoard"/>
+    </select> 
+    
+    <select id="selectBoard4List" resultType="gu.board4.boardVO" parameterType="gu.common.SearchVO">
+        SELECT BRDNO, BRDTITLE, BRDWRITER, DATE_FORMAT(BRDDATE,'%Y-%m-%d') BRDDATE, BRDHIT
+        	 , (SELECT COUNT(*) FROM TBL_BOARDFILE WHERE BRDNO=TB.BRDNO) FILECNT
+          FROM TBL_BOARD TB
+         <include refid="includeBoard"/>
+         ORDER BY BRDNO DESC 
+         LIMIT ${rowStart-1}, ${rowEnd}
+    </select> 
+    
+    <insert id="insertBoard4" parameterType="gu.board4.boardVO" >
+       	<selectKey resultType="String" keyProperty="brdno" order="BEFORE">
+    		SELECT IFNULL(MAX(BRDNO),0)+1 FROM TBL_BOARD
+    	</selectKey>
+    
+    	INSERT INTO TBL_BOARD(BRDNO, BRDTITLE, BRDWRITER, BRDMEMO, BRDDATE, BRDHIT, BRDDELETEFLAG)
+		VALUES (#{brdno}, #{brdtitle}, #{brdwriter}, #{brdmemo}, NOW(), 0, 'N' )
+	</insert>
+	
+    <update id="updateBoard4" parameterType="gu.board4.boardVO">
+        UPDATE TBL_BOARD
+           SET BRDTITLE=#{brdtitle}
+             , BRDWRITER=#{brdwriter}
+             , BRDMEMO=#{brdmemo} 
+         WHERE BRDDELETEFLAG='N'
+           AND BRDNO=#{brdno}
+    </update> 
+		
+    <select id="selectBoard4One" parameterType="String" resultType="gu.board4.boardVO">
+        SELECT BRDNO, BRDTITLE, BRDWRITER, BRDMEMO, DATE_FORMAT(BRDDATE,'%Y-%m-%d') BRDDATE
+          FROM TBL_BOARD
+         WHERE BRDDELETEFLAG='N'
+           AND BRDNO=#{brdno}
+    </select> 
+
+    <update id="updateBoard4Read" parameterType="String">
+        UPDATE TBL_BOARD
+           SET BRDHIT = BRDHIT + 1 
+         WHERE BRDNO=#{brdno}
+    </update> 
+
+    <delete id="deleteBoard4One" parameterType="String">
+        UPDATE TBL_BOARD
+           SET BRDDELETEFLAG='Y' 
+         WHERE BRDNO=#{brdno}
+    </delete> 
+	<!-- =============================================================================== -->
+    <select id="selectBoard4FileList" resultType="gu.common.FileVO" parameterType="String">
+        SELECT FILENO, FILENAME, REALNAME, FILESIZE
+          FROM TBL_BOARDFILE
+         WHERE BRDNO=#{brdno}
+         ORDER BY FILENO DESC 
+    </select> 
+
+    <insert id="insertBoard4File" parameterType="gu.common.FileVO" >
+    	INSERT INTO TBL_BOARDFILE (BRDNO, FILENAME, REALNAME, FILESIZE)
+		VALUES (#{parentPK}, #{filename}, #{realname}, #{filesize})
+	</insert>
+    <delete id="deleteBoard4File" parameterType="String">
+        DELETE 
+          FROM TBL_BOARDFILE
+         WHERE FILENO IN (#{fileno})
+    </delete> 
+	
+</mapper>
+
