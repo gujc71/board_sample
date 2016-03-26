@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %5p [%c] %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="java.sql" level="INFO" additivity="true">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="java.sql.Statement" level="WARN" additivity="true">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="java.sql.ResultSet" level="WARN" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+ 		<logger name="jdbc.resultsettable" level="WARN" additivity="false">  
+        	<appender-ref ref="console"/>  
+    	</logger>
+        <Logger name="java.sql.sqlonly" level="DEBUG" additivity="true">
+            <AppenderRef ref="console" />
+        </Logger>   
+           
+        <Logger name="gu" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+          <!-- log SQL with timing information, post execution -->
+        <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+            
+        <Logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Root level="DEBUG">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>
