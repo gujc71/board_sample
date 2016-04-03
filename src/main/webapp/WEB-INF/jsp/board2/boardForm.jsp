@@ -8,7 +8,7 @@
 <title>board2</title>
 </head>
 <body>
-	<form name="form1" action="board2Save">
+	<form name="form1" action="board2Save" method="post">
 		<table border="1" style="width:600px">
 			<caption>게시판</caption>
 			<colgroup>

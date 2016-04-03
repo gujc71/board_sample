@@ -30,7 +30,7 @@ function fn_formSubmit(){
 </script>
 </head>
 <body>
-	<form name="form1" action="board3Save" method="get">
+	<form name="form1" action="board3Save" method="post">
 		<table border="1" style="width:600px">
 			<caption>게시판</caption>
 			<colgroup>

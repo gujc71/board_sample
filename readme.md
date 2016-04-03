@@ -16,7 +16,7 @@ URL: http://localhost:8080/board/board1List
 
 ### 2. board Step 2 (board2) ###
 - List: 페이징, 새로운 번호 부여
-- Form: 입력/수정을 하나로, POST 처리
+- Form: 입력/수정을 하나로
 - Read: 조회수 
 - Delete: 삭제에서 숨기기로
 
