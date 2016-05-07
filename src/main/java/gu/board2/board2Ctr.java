@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import gu.common.PageVO;
@@ -22,7 +21,7 @@ public class board2Ctr {
     @RequestMapping(value = "/board2List")
    	public String boardList(PageVO pageVO, ModelMap modelMap) throws Exception {
 
-    	pageVO.PageCalculate( boardSvc.selectBoardCount() ); // startRow, endRow
+    	pageVO.pageCalculate( boardSvc.selectBoardCount() ); // startRow, endRow
 
     	List<?> listview   = boardSvc.selectBoardList(pageVO);
         

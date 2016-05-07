@@ -23,7 +23,7 @@ public class board4Ctr {
     @RequestMapping(value = "/board4List")
    	public String boardList(SearchVO searchVO, ModelMap modelMap) throws Exception {
 
-    	searchVO.PageCalculate( boardSvc.selectBoardCount(searchVO) ); // startRow, endRow
+    	searchVO.pageCalculate( boardSvc.selectBoardCount(searchVO) ); // startRow, endRow
 
     	List<?> listview   = boardSvc.selectBoardList(searchVO);
         
@@ -52,7 +52,7 @@ public class board4Ctr {
     	String[] fileno = request.getParameterValues("fileno");
     	
     	FileUtil fs = new FileUtil();
-		List<FileVO> filelist = fs.SaveAllFiles(boardInfo.getUploadfile());
+		List<FileVO> filelist = fs.saveAllFiles(boardInfo.getUploadfile());
 
    		boardSvc.insertBoard(boardInfo, filelist, fileno);
 

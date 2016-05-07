@@ -22,9 +22,9 @@ public class Board41Ctr {
      * 리스트.
      */
     @RequestMapping(value = "/board41List")
-    public String boardList(SearchVO searchVO, ModelMap modelMap) throws Exception {
+    public String boardList(SearchVO searchVO, ModelMap modelMap) {
 
-        searchVO.PageCalculate( boardSvc.selectBoardCount(searchVO) ); // startRow, endRow
+        searchVO.pageCalculate( boardSvc.selectBoardCount(searchVO) ); // startRow, endRow
 
         List<?> listview   = boardSvc.selectBoardList(searchVO);
         
@@ -37,7 +37,7 @@ public class Board41Ctr {
      * 글 쓰기. 
      */
     @RequestMapping(value = "/board41Form")
-    public String boardForm(HttpServletRequest request, ModelMap modelMap) throws Exception {
+    public String boardForm(HttpServletRequest request, ModelMap modelMap) {
         String brdno = request.getParameter("brdno");
         if (brdno != null) {
             BoardVO boardInfo = boardSvc.selectBoardOne(brdno);
@@ -54,13 +54,13 @@ public class Board41Ctr {
      * 글 저장.
      */
     @RequestMapping(value = "/board41Save")
-       public String boardSave(HttpServletRequest request, BoardVO boardInfo) throws Exception {
+    public String boardSave(HttpServletRequest request, BoardVO boardInfo) {
         String[] fileno = request.getParameterValues("fileno");
         
         FileUtil fs = new FileUtil();
-        List<FileVO> filelist = fs.SaveAllFiles(boardInfo.getUploadfile());
+        List<FileVO> filelist = fs.saveAllFiles(boardInfo.getUploadfile());
 
-           boardSvc.insertBoard(boardInfo, filelist, fileno);
+        boardSvc.insertBoard(boardInfo, filelist, fileno);
 
         return "redirect:/board41List";
     }
@@ -69,7 +69,7 @@ public class Board41Ctr {
      * 글 읽기.
      */
     @RequestMapping(value = "/board41Read")
-    public String board4Read(HttpServletRequest request, ModelMap modelMap) throws Exception {
+    public String board4Read(HttpServletRequest request, ModelMap modelMap) {
         
         String brdno = request.getParameter("brdno");
         
@@ -87,7 +87,7 @@ public class Board41Ctr {
      * 글 삭제.
      */
     @RequestMapping(value = "/board41Delete")
-    public String boardDelete(HttpServletRequest request) throws Exception {
+    public String boardDelete(HttpServletRequest request) {
         
         String brdno = request.getParameter("brdno");
         

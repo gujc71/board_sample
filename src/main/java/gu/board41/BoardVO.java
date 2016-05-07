@@ -16,7 +16,6 @@ public class BoardVO {
     private String brddeleteflag; 
     private String filecnt;
     
-
     /* 첨부파일 */
     private List<MultipartFile> uploadfile;
 

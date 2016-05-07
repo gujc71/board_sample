@@ -21,7 +21,7 @@ public class board3Ctr {
     @RequestMapping(value = "/board3List")
    	public String boardList(SearchVO searchVO, ModelMap modelMap) throws Exception {
 
-    	searchVO.PageCalculate( boardSvc.selectBoardCount(searchVO) ); 
+    	searchVO.pageCalculate( boardSvc.selectBoardCount(searchVO) ); 
 
     	List<?> listview   = boardSvc.selectBoardList(searchVO);
         
