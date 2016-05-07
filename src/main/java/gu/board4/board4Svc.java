@@ -40,10 +40,12 @@ public class board4Svc {
 	    		 sqlSession.insert("insertBoard4", param);
 	    	else sqlSession.update("updateBoard4", param);
 	
-			HashMap p = new HashMap();
-			p.put("fileno", fileno) ;
-			sqlSession.insert("deleteBoard4File", p);
-			
+	    	if (fileno != null) {
+	    	    HashMap p = new HashMap();
+	    	    p.put("fileno", fileno) ;
+	    	    sqlSession.insert("deleteBoard4File", p);
+	    	}
+	    	
 	    	for (FileVO f : filelist) {
 	    		f.setParentPK(param.getBrdno());
 	   		 	sqlSession.insert("insertBoard4File", f);
