@@ -26,29 +26,39 @@ function fn_replyDelete(reno){
 	if (!confirm("삭제하시겠습니까?")) {
 		return;
 	}
-	$("#form2").attr("action", "board8ReplyDelete");
-	$("#reno2").val(reno);
-	$("#form2").submit();	
-} 
+	$.ajax({
+		url: "board7ReplyDelete",
+		type:"post", 
+		data: {"reno": reno},
+		success: function(result){
+			if (result=="OK") {
+				$("#replyItem"+reno).remove();
+				alert("삭제되었습니다.");
+			} else{
+				alert("댓글이 있어서 삭제할 수 있습니다.");
+			}
+		}
+	})
+}
 
-var updateReno = null;
+var updateReno = updateRememo = null;
 function fn_replyUpdate(reno){
 	hideDiv("replyDialog");
 	
-	var reply = $("#reply"+reno);
 	$("#replyDiv").show();
 	
 	if (updateReno) {
 		$("#replyDiv").appendTo(document.body);
-		$("#reply"+updateReno).text(form.rememo.value);
+		$("#reply"+updateReno).text(updateRememo);
 	} 
 	
 	$("#reno2").val(reno);
-	$("#rememo2").val(reply.text());
-	reply.text("");
-	$("#replyDiv").appendTo(reply);
+	$("#rememo2").val($("#reply"+reno).text());
+	$("#reply"+reno).text("");
+	$("#replyDiv").appendTo($("#reply"+reno));
 	$("#rememo2").focus();
-	updateReno = reno;
+	updateReno   = reno;
+	updateRememo = $("#rememo2").val();
 } 
 
 function fn_replyUpdateSave(){
@@ -65,8 +75,8 @@ function fn_replyUpdateSave(){
 function fn_replyUpdateCancel(){
 	hideDiv("#replyDiv");
 	
-	$("#reply"+updateReno).text($("#rememo2").val());
-	updateReno = null;
+	$("#reply"+updateReno).text(updateRememo);
+	updateReno = updateRememo = null;
 } 
 
 function hideDiv(id){
@@ -75,7 +85,6 @@ function hideDiv(id){
 }
 
 function fn_replyReply(reno){
-	var reply = document.getElementById("reply"+reno);
 	$("#replyDialog").show();
 	
 	if (updateReno) {
@@ -146,7 +155,6 @@ function fn_replyReplySave(){
 		<div style="border: 1px solid; width: 600px; padding: 5px">
 			<form id="form1" name="form1" action="board8ReplySave" method="post">
 				<input type="hidden" id="brdno1" name="brdno" value="<c:out value="${boardInfo.brdno}"/>"> 
-				<input type="hidden" id="reno1" name="reno"> 
 				작성자: <input type="text" id="rewriter1" name="rewriter" size="20" maxlength="20"> <br/>
 				<textarea id="rememo1" name="rememo" rows="3" cols="60" maxlength="500" placeholder="댓글을 달아주세요."></textarea>
 				<a href="#" onclick="fn_formSubmit()">저장</a>
@@ -161,7 +169,7 @@ function fn_replyReplySave(){
 				<a href="#" onclick="fn_replyReply('<c:out value="${replylist.reno}"/>')">댓글</a>
 				<br/>
 				<div id="reply<c:out value="${replylist.reno}"/>"><c:out value="${replylist.rememo}"/></div>
-			</div>
+			</div><br/>
 		</c:forEach>
 
 		<div id="replyDiv" style="width: 99%; display:none">

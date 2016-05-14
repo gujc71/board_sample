@@ -34,7 +34,7 @@ function fn_replyDelete(reno){
 	form.submit();	
 } 
 
-var updateReno = null;
+var updateReno = updateRememo = null;
 function fn_replyUpdate(reno){
 	hideDiv("replyDialog");
 	
@@ -46,14 +46,15 @@ function fn_replyUpdate(reno){
 	if (updateReno) {
 		document.body.appendChild(replyDiv);
 		var oldReno = document.getElementById("reply"+updateReno);
-		oldReno.innerText = form.rememo.value;
+		oldReno.innerText = updateRememo;
 	} 
 	
 	form.reno.value=reno;
 	form.rememo.value = reply.innerText;
 	reply.innerText ="";
 	reply.appendChild(replyDiv);
-	updateReno = reno;
+	updateReno   = reno;
+	updateRememo = form.rememo.value;
 	form.rememo.focus();
 } 
 
@@ -74,8 +75,8 @@ function fn_replyUpdateCancel(){
 	hideDiv("replyDiv");
 	
 	var oldReno = document.getElementById("reply"+updateReno);
-	oldReno.innerText = form.rememo.value;
-	updateReno = null;
+	oldReno.innerText = updateRememo;
+	updateReno = updateRememo = null;
 } 
 
 function hideDiv(id){
@@ -94,8 +95,8 @@ function fn_replyReply(reno){
 		fn_replyUpdateCancel();
 	} 
 	
-	form.reparent.value=reno;
 	form.rememo.value = "";
+	form.reparent.value=reno;
 	reply.appendChild(replyDia);
 	form.rewriter.focus();
 } 
@@ -161,7 +162,6 @@ function fn_replyReplySave(){
 		<div style="border: 1px solid; width: 600px; padding: 5px">
 			<form name="form1" action="board6ReplySave" method="post">
 				<input type="hidden" name="brdno" value="<c:out value="${boardInfo.brdno}"/>"> 
-				<input type="hidden" name="reno"> 
 				작성자: <input type="text" name="rewriter" size="20" maxlength="20"> <br/>
 				<textarea name="rememo" rows="3" cols="60" maxlength="500" placeholder="댓글을 달아주세요."></textarea>
 				<a href="#" onclick="fn_formSubmit()">저장</a>
@@ -176,7 +176,7 @@ function fn_replyReplySave(){
 				<a href="#" onclick="fn_replyReply('<c:out value="${replylist.reno}"/>')">댓글</a>
 				<br/>
 				<div id="reply<c:out value="${replylist.reno}"/>"><c:out value="${replylist.rememo}"/></div>
-			</div>
+			</div><br/>
 		</c:forEach>
 
 		<div id="replyDiv" style="width: 99%; display:none">

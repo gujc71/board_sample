@@ -1,8 +1,11 @@
 package gu.board7;
 
+import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -119,12 +122,18 @@ public class Board7Ctr {
      * 댓글 삭제.
      */
     @RequestMapping(value = "/board7ReplyDelete")
-    public String board7ReplyDelete(HttpServletRequest request, BoardReplyVO boardReplyInfo) {
+    public void board7ReplyDelete(HttpServletResponse response, BoardReplyVO boardReplyInfo) {
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json;charset=UTF-8");
         
-        if (!boardSvc.deleteBoard6Reply(boardReplyInfo.getReno()) ) {
-            return "board7/BoardFailure";
+        try {
+            if (!boardSvc.deleteBoard6Reply(boardReplyInfo.getReno()) ) {
+                response.getWriter().print(mapper.writeValueAsString("Fail"));
+            } else {
+                response.getWriter().print(mapper.writeValueAsString("OK"));
+            }
+        } catch (IOException ex) {
+            System.out.println("오류: 댓글 삭제에 문제가 발생했습니다.");
         }
-
-        return "redirect:/board7Read?brdno=" + boardReplyInfo.getBrdno();
     }      
 }

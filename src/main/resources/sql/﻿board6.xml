@@ -20,7 +20,7 @@
     <select id="selectBoard6List" resultType="gu.board6.BoardVO" parameterType="gu.common.SearchVO">
         SELECT BRDNO, BRDTITLE, BRDWRITER, DATE_FORMAT(BRDDATE,'%Y-%m-%d') BRDDATE, BRDHIT
              , (SELECT COUNT(*) FROM TBL_BOARDFILE WHERE BRDNO=TB.BRDNO) FILECNT
-             , (SELECT COUNT(*) FROM TBL_BOARDREPLY WHERE BRDNO=TB.BRDNO) REPLYCNT
+             , (SELECT COUNT(*) FROM TBL_BOARDREPLY WHERE BRDNO=TB.BRDNO AND REDELETEFLAG='N') REPLYCNT
           FROM TBL_BOARD TB
          <include refid="includeBoard"/>
          ORDER BY BRDNO DESC 
@@ -129,7 +129,7 @@
     <select id="selectBoard6ReplyChild" resultType="Integer" parameterType="String">
         SELECT COUNT(*)
           FROM TBL_BOARDREPLY
-         WHERE REPARENT=#{reparent} AND RENO!=#{reparent}
+         WHERE REPARENT=#{reparent} AND RENO!=#{reparent} AND REDELETEFLAG='N'
     </select>
 
     <update id="deleteBoard6Reply" parameterType="String"> 

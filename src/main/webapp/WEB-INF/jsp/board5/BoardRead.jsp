@@ -34,7 +34,7 @@ function fn_replyDelete(reno){
 	form.submit();	
 } 
 
-var updateReno = null;
+var updateReno = updateRememo = null;
 function fn_replyUpdate(reno){
 	var form = document.form2;
 	var reply = document.getElementById("reply"+reno);
@@ -44,14 +44,15 @@ function fn_replyUpdate(reno){
 	if (updateReno) {
 		document.body.appendChild(replyDiv);
 		var oldReno = document.getElementById("reply"+updateReno);
-		oldReno.innerText = form.rememo.value;
+		oldReno.innerText = updateRememo;
 	} 
 	
 	form.reno.value=reno;
 	form.rememo.value = reply.innerText;
 	reply.innerText ="";
 	reply.appendChild(replyDiv);
-	updateReno = reno;
+	updateReno   = reno;
+	updateRememo = form.rememo.value;
 	form.rememo.focus();
 } 
 
@@ -74,7 +75,8 @@ function fn_replyUpdateCancel(){
 	replyDiv.style.display = "none";
 	
 	var oldReno = document.getElementById("reply"+updateReno);
-	oldReno.innerText = form.rememo.value;
+	oldReno.innerText = updateRememo;
+	updateReno = updateRememo = null;
 } 
 
 </script>
@@ -118,7 +120,6 @@ function fn_replyUpdateCancel(){
 		<div style="border: 1px solid; width: 600px; padding: 5px">
 			<form name="form1" action="board5ReplySave" method="post">
 				<input type="hidden" name="brdno" value="<c:out value="${boardInfo.brdno}"/>"> 
-				<input type="hidden" name="reno"> 
 				작성자: <input type="text" name="rewriter" size="20" maxlength="20"> <br/>
 				<textarea name="rememo" rows="3" cols="60" maxlength="500" placeholder="댓글을 달아주세요."></textarea>
 				<a href="#" onclick="fn_formSubmit()">저장</a>
