@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,6 +92,7 @@ public class Board7Ctr {
         modelMap.addAttribute("replylist", replylist);
         
         return "board7/BoardRead";
+        //return "board7/BoardReadAjax";
     }
     
     /**
@@ -119,10 +122,52 @@ public class Board7Ctr {
     }
     
     /**
+     * 댓글 저장 with Ajax.
+     */
+    @RequestMapping(value = "/board7ReplySaveAjax")
+    public void board7ReplySaveAjax(HttpServletResponse response, BoardReplyVO boardReplyInfo) {
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json;charset=UTF-8");
+        
+        boardSvc.insertBoardReply(boardReplyInfo);
+        
+        try {
+            response.getWriter().print( mapper.writeValueAsString(boardReplyInfo.getReno()));
+        } catch (IOException ex) {
+            System.out.println("오류: 댓글 저장에 문제가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 댓글 저장  with Ajax2.
+     */
+    @RequestMapping(value = "/board7ReplySaveAjax4Reply")
+    public String board7ReplySaveAjax4Reply(BoardReplyVO boardReplyInfo, ModelMap modelMap) {
+        
+        boardSvc.insertBoardReply(boardReplyInfo);
+
+        modelMap.addAttribute("replyInfo", boardReplyInfo);
+        
+        return "board7/BoardReadAjax4Reply";
+    }
+    
+    /**
      * 댓글 삭제.
      */
     @RequestMapping(value = "/board7ReplyDelete")
-    public void board7ReplyDelete(HttpServletResponse response, BoardReplyVO boardReplyInfo) {
+    public String board7ReplyDelete(BoardReplyVO boardReplyInfo) {
+        
+        if (!boardSvc.deleteBoard6Reply(boardReplyInfo.getReno()) ) {
+            return "board7/BoardFailure";
+        }
+        return "redirect:/board7Read?brdno=" + boardReplyInfo.getBrdno();
+    }
+    
+    /**
+     * 댓글 삭제 with Ajax.
+     */
+    @RequestMapping(value = "/board7ReplyDeleteAjax")
+    public void board7ReplyDeleteAjax(HttpServletResponse response, BoardReplyVO boardReplyInfo) {
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         
@@ -135,5 +180,6 @@ public class Board7Ctr {
         } catch (IOException ex) {
             System.out.println("오류: 댓글 삭제에 문제가 발생했습니다.");
         }
-    }      
+    }
+    
 }

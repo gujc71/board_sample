@@ -26,25 +26,6 @@ function fn_replyDelete(reno){
 	if (!confirm("삭제하시겠습니까?")) {
 		return;
 	}
-	$.ajax({
-		url: "board7ReplyDelete",
-		type:"post", 
-		data: {"reno": reno},
-		success: function(result){
-			if (result=="OK") {
-				$("#replyItem"+reno).remove();
-				alert("삭제되었습니다.");
-			} else{
-				alert("댓글이 있어서 삭제할 수 있습니다.");
-			}
-		}
-	})
-} 
-
-function fn_replyDelete_bk(reno){
-	if (!confirm("삭제하시겠습니까?")) {
-		return;
-	}
 	$("#form2").attr("action", "board7ReplyDelete");
 	$("#reno2").val(reno);
 	$("#form2").submit();	
