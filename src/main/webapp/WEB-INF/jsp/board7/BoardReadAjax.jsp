@@ -72,7 +72,7 @@ function fn_replyDelete(reno){
 				$("#replyItem"+reno).remove();
 				alert("삭제되었습니다.");
 			} else{
-				alert("댓글이 있어서 삭제할 수 있습니다.");
+				alert("댓글이 있어서 삭제할 수 없습니다.");
 			}
 		}
 	})

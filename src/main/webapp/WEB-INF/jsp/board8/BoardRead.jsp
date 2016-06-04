@@ -8,18 +8,35 @@
 <title>board8</title>
 <script src="js/jquery-2.2.3.min.js"></script>
 <script>
+
+function chkInputValue(id, msg){
+	if ( $.trim($(id).val()) == "") {
+		alert(msg+" 입력해주세요.");
+		$(id).focus();
+		return false;
+	}
+	return true;
+}
 function fn_formSubmit(){
-	if ( $.trim($("#rewriter1").val()) == "") {
-		alert("작성자를 입력해주세요.");
-		$("#rewriter1").focus();
-		return;
-	}
-	if ($.trim($("#rememo1").val()) == "") {
-		alert("글 내용을 입력해주세요.");
-		$("#rememo1").focus();
-		return;
-	}
-	$("#form1").submit();	
+	if ( ! chkInputValue("#rewriter1", "작성자를")) return;
+	if ( ! chkInputValue("#rememo1", "글 내용을")) return;
+	
+	var formData = $("#form1").serialize();
+	$.ajax({
+		url: "board8ReplySave", 
+		type:"post", 
+		data : formData,
+		success: function(result){
+			if (result!=="") {
+				$("#rewriter1").val("");
+				$("#rememo1").val("");
+				$("#replyList").append(result);
+				alert("저장되었습니다.");
+			} else{
+				alert("서버에 오류가 있어서 저장되지 않았습니다.");
+			}
+		}
+	})		
 }
 
 function fn_replyDelete(reno){
@@ -27,7 +44,7 @@ function fn_replyDelete(reno){
 		return;
 	}
 	$.ajax({
-		url: "board7ReplyDelete",
+		url: "board8ReplyDelete",
 		type:"post", 
 		data: {"reno": reno},
 		success: function(result){
@@ -35,7 +52,7 @@ function fn_replyDelete(reno){
 				$("#replyItem"+reno).remove();
 				alert("삭제되었습니다.");
 			} else{
-				alert("댓글이 있어서 삭제할 수 있습니다.");
+				alert("댓글이 있어서 삭제할 수 없습니다.");
 			}
 		}
 	})
@@ -62,14 +79,23 @@ function fn_replyUpdate(reno){
 } 
 
 function fn_replyUpdateSave(){
-	if ($.trim($("#rememo2").val()) == "") {
-		alert("글 내용을 입력해주세요.");
-		$("#rememo2").focus();
-		return;
-	}
+	if ( ! chkInputValue("#rememo2", "글 내용을")) return;
 	
-	$("#form2").attr("action", "board8ReplySave");
-	$("#form2").submit();	
+	var formData = $("#form2").serialize();
+	$.ajax({
+		url: "board8ReplySave", 
+		type:"post", 
+		data : formData,
+		success: function(result){
+			if (result!=="") {
+				$("#reply"+updateReno).text($("#rememo2").val());
+				$("#replyDiv").hide();
+				alert("저장되었습니다.");
+			} else{
+				alert("서버에 오류가 있어서 저장되지 않았습니다.");
+			}
+		}
+	})
 } 
 
 function fn_replyUpdateCancel(){
@@ -101,18 +127,27 @@ function fn_replyReplyCancel(){
 } 
 
 function fn_replyReplySave(){
-	if ( $.trim($("#rewriter3").val()) == "") {
-		alert("작성자를 입력해주세요.");
-		$("#rewriter3").focus();
-		return;
-	}
-	if ($.trim($("#rememo3").val()) == "") {
-		alert("글 내용을 입력해주세요.");
-		$("#rememo3").focus();
-		return;
-	}
-	$("#form3").attr("action", "board8ReplySave");
-	$("#form3").submit();
+	if ( ! chkInputValue("#rewriter3", "작성자를")) return;
+	if ( ! chkInputValue("#rememo3", "글 내용을")) return;
+
+	var formData = $("#form3").serialize();
+	$.ajax({
+		url: "board8ReplySave",
+		type:"post", 
+		data : formData,
+		success: function(result){
+			if (result!=="") {
+				var parent = $("#reparent3").val();
+				$("#replyItem"+parent).after(result);
+				$("#replyDialog").hide();
+				alert("저장되었습니다.");
+				$("#rewriter3").val("");
+				$("#rememo3").val("");
+			} else{
+				alert("서버에 오류가 있어서 저장되지 않았습니다.");
+			}
+		}
+	})	
 }
 </script>
 
@@ -153,7 +188,7 @@ function fn_replyReplySave(){
 		<a href="board8Form?brdno=<c:out value="${boardInfo.brdno}"/>">수정</a>
 		<p>&nbsp;</p>
 		<div style="border: 1px solid; width: 600px; padding: 5px">
-			<form id="form1" name="form1" action="board8ReplySave" method="post">
+			<form id="form1" name="form1">
 				<input type="hidden" id="brdno1" name="brdno" value="<c:out value="${boardInfo.brdno}"/>"> 
 				작성자: <input type="text" id="rewriter1" name="rewriter" size="20" maxlength="20"> <br/>
 				<textarea id="rememo1" name="rememo" rows="3" cols="60" maxlength="500" placeholder="댓글을 달아주세요."></textarea>
@@ -161,16 +196,19 @@ function fn_replyReplySave(){
 			</form>
 		</div>
 		
-		<c:forEach var="replylist" items="${replylist}" varStatus="status">
-			<div style="border: 1px solid gray; width: 600px; padding: 5px; margin-top: 5px; margin-left: <c:out value="${20*replylist.redepth}"/>px; display: inline-block">	
-				<c:out value="${replylist.rewriter}"/> <c:out value="${replylist.redate}"/>
-				<a href="#" onclick="fn_replyDelete('<c:out value="${replylist.reno}"/>')">삭제</a>
-				<a href="#" onclick="fn_replyUpdate('<c:out value="${replylist.reno}"/>')">수정</a>
-				<a href="#" onclick="fn_replyReply('<c:out value="${replylist.reno}"/>')">댓글</a>
-				<br/>
-				<div id="reply<c:out value="${replylist.reno}"/>"><c:out value="${replylist.rememo}"/></div>
-			</div><br/>
-		</c:forEach>
+		<div id="replyList"> 
+			<c:forEach var="replylist" items="${replylist}" varStatus="status">
+				<div id="replyItem<c:out value="${replylist.reno}"/>"
+							style="border: 1px solid gray; width: 600px; padding: 5px; margin-top: 5px; margin-left: <c:out value="${20*replylist.redepth}"/>px; display: inline-block">	
+					<c:out value="${replylist.rewriter}"/> <c:out value="${replylist.redate}"/>
+					<a href="#" onclick="fn_replyDelete('<c:out value="${replylist.reno}"/>')">삭제</a>
+					<a href="#" onclick="fn_replyUpdate('<c:out value="${replylist.reno}"/>')">수정</a>
+					<a href="#" onclick="fn_replyReply('<c:out value="${replylist.reno}"/>')">댓글</a>
+					<br/>
+					<div id="reply<c:out value="${replylist.reno}"/>"><c:out value="${replylist.rememo}"/></div>
+				</div><br/>
+			</c:forEach>
+		</div>
 
 		<div id="replyDiv" style="width: 99%; display:none">
 			<form id="form2" name="form2" action="board8ReplySave" method="post">

@@ -8,22 +8,19 @@
 <title>board8</title>
 <script src="js/jquery-2.2.3.min.js"></script>
 <script>
+function chkInputValue(id, msg){
+	if ( $.trim($(id).val()) == "") {
+		alert(msg+" 입력해주세요.");
+		$(id).focus();
+		return false;
+	}
+	return true;
+}
 function fn_formSubmit(){
-	if ( $.trim($("#brdwriter").val()) == "") {
-		alert("작성자를 입력해주세요.");
-		$("#brdwriter").focus();
-		return;
-	}
-	if ($.trim($("#brdtitle").val()) == "") {
-		alert("글 제목을 입력해주세요.");
-		$("#brdtitle").focus();
-		return;
-	}
-	if ($.trim($("#brdmemo").val()) == "") {
-		alert("글 내용을 입력해주세요.");
-		$("#brdmemo").focus();
-		return;
-	}
+	if ( ! chkInputValue("#brdwriter", "작성자를")) return;
+	if ( ! chkInputValue("#brdtitle", "글 제목을")) return;
+	if ( ! chkInputValue("#brdmemo", "글 내용을")) return;
+	
 	$("#form1").submit();
 } 
 </script>

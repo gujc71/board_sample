@@ -1,8 +1,11 @@
 package gu.board8;
 
+import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -111,23 +114,33 @@ public class Board8Ctr {
      * 댓글 저장.
      */
     @RequestMapping(value = "/board8ReplySave")
-    public String board8ReplySave(HttpServletRequest request, BoardReplyVO boardReplyInfo) {
+    public String board8ReplySave(HttpServletRequest request, BoardReplyVO boardReplyInfo, ModelMap modelMap) {
         
         boardSvc.insertBoardReply(boardReplyInfo);
 
-        return "redirect:/board8Read?brdno=" + boardReplyInfo.getBrdno();
+        modelMap.addAttribute("replyInfo", boardReplyInfo);
+        
+        return "board8/BoardReadAjax4Reply";        
     }
     
     /**
      * 댓글 삭제.
      */
     @RequestMapping(value = "/board8ReplyDelete")
-    public String board8ReplyDelete(HttpServletRequest request, BoardReplyVO boardReplyInfo) {
+    public void board8ReplyDelete(HttpServletResponse response, BoardReplyVO boardReplyInfo) {
         
-        if (!boardSvc.deleteBoard8Reply(boardReplyInfo.getReno()) ) {
-            return "board8/BoardFailure";
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json;charset=UTF-8");
+        
+        try {
+            if (!boardSvc.deleteBoard8Reply(boardReplyInfo.getReno()) ) {
+                response.getWriter().print(mapper.writeValueAsString("Fail"));
+            } else {
+                response.getWriter().print(mapper.writeValueAsString("OK"));
+            }
+        } catch (IOException ex) {
+            System.out.println("오류: 댓글 삭제에 문제가 발생했습니다.");
         }
-
-        return "redirect:/board8Read?brdno=" + boardReplyInfo.getBrdno();
-    }      
+    }
+   
 }
