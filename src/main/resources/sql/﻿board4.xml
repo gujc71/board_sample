@@ -23,7 +23,7 @@
           FROM TBL_BOARD TB
          <include refid="includeBoard"/>
          ORDER BY BRDNO DESC 
-         LIMIT ${rowStart-1}, ${rowEnd}
+         LIMIT ${rowStart-1}, 10
     </select> 
     
     <insert id="insertBoard4" parameterType="gu.board4.boardVO" >

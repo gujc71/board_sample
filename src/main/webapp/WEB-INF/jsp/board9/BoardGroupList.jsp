@@ -18,6 +18,7 @@ $(function(){
 		children: <c:out value="${treeStr}" escapeXml="false"/>,
 		onActivate: TreenodeActivate
 	});
+	fn_groupNew();
 });
 function TreenodeActivate(node) {
 	selectedNode = node;
@@ -82,7 +83,7 @@ function fn_groupSave(){
     if (!confirm("저장하시겠습니까?")) return;
 
     $.ajax({
-    	url: "boardGroupSave.dmn",
+    	url: "boardGroupSave",
     	cache: false,
     	type: "POST",
     	data: { bgno:$("#bgno").val(), bgname:$("#bgname").val(), bgparent: pid,

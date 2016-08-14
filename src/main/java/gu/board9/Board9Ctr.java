@@ -56,11 +56,6 @@ public class Board9Ctr {
         String bgno = request.getParameter("bgno");
         String brdno = request.getParameter("brdno");
         
-        BoardGroupVO bgInfo = boardGroupSvc.selectBoardGroupOne4Used(bgno);
-        if (bgInfo == null) {
-            return "board9/BoardGroupFail";
-        }
-        
         if (brdno != null) {
             BoardVO boardInfo = boardSvc.selectBoardOne(brdno);
             List<?> listview = boardSvc.selectBoard8FileList(brdno);
@@ -69,6 +64,11 @@ public class Board9Ctr {
             modelMap.addAttribute("listview", listview);
             bgno = boardInfo.getBgno();
         }
+        BoardGroupVO bgInfo = boardGroupSvc.selectBoardGroupOne4Used(bgno);
+        if (bgInfo == null) {
+            return "board9/BoardGroupFail";
+        }
+        
         modelMap.addAttribute("bgno", bgno);
         modelMap.addAttribute("bgInfo", bgInfo);
         
