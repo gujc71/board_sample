@@ -139,7 +139,7 @@ function fn_replyReplySave(){
 			if (result!=="") {
 				var parent = $("#reparent3").val();
 				$("#replyItem"+parent).after(result);
-				$("#replyDialog").hide();
+				hideDiv("#replyDialog");
 				alert("저장되었습니다.");
 				$("#rewriter3").val("");
 				$("#rememo3").val("");
