@@ -47,6 +47,9 @@ URL: http://localhost:8080/board/board2List
 ### 8. board Step 8 (board8) ###
 - 멀티 게시판
 
+### 9. board Step 9 (board9) ###
+- 멀티 게시판 관리자
+
 ### 개발 환경 ### 
     Programming Language - Java 1.7
     IDE - Eclipse
