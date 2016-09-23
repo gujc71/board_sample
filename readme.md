@@ -3,6 +3,8 @@
 
 자세한 설명은 [이곳에서](http://forest71.tistory.com/2) 얻을 수 있다. 
 
+박재욱(우사양반)님이 MariaDB를 ORACLE로 변환해서 구현하였고, [이곳에서](https://github.com/wodnr4330/board_sample_oracle) 얻을 수 있다.
+
 각 내용은 다음과 같이 구성되었다.
 
 ### 1. board Step 1 (board1) ###
