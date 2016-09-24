@@ -71,7 +71,7 @@ URL: http://localhost:8080/board/board2List
       BRDMEMO   varchar(4000),					-- 글 내용
       BRDDATE	datetime,							-- 작성일자
       BRDHIT INT,									-- 조회수
-      BRDDELETEFLAG CHAR(1)						-- 삭제 여부
+      BRDDELETEFLAG CHAR(1),						-- 삭제 여부
       PRIMARY KEY (BRDNO)
     ) ;
 
@@ -93,7 +93,7 @@ URL: http://localhost:8080/board/board2List
 	    REDELETEFLAG VARCHAR(1) NOT NULL,      -- 삭제여부
 	    REPARENT INT(11),							-- 부모 댓글	
 	    REDEPTH INT,								-- 깊이	
-	    REORDER INT								-- 순서
+	    REORDER INT,								-- 순서
 	    PRIMARY KEY (RENO)
 	);
 
