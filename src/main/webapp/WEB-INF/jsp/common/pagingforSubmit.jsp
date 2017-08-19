@@ -8,7 +8,7 @@
 			<a href="javascript:fnSubmitForm(${searchVO.page-1});">[이전]</a>
 		</c:if>
 				
-		<c:forEach var="i" begin="${searchVO.pageStart}" end="${searchVO.pageEnd}" step="1">
+		<c:forEach var="i" begin="${searchVO.pageStart}" end="${searchVO.pageEnd}" step="1" varStatus="status">
             <c:choose>
                 <c:when test="${i eq searchVO.page}">
                 	<c:out value="${i}"/>
